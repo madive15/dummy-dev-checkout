@@ -34,6 +34,8 @@ import {
     PaymentMethodId,
     PaymentMethodProviderType,
 } from './paymentMethod';
+import { Button, ButtonSize, ButtonVariant } from '../ui/button';
+
 
 export interface PaymentProps {
     errorLogger: ErrorLogger;
@@ -47,6 +49,7 @@ export interface PaymentProps {
     onSubmit?(): void;
     onSubmitError?(error: Error): void;
     onUnhandledError?(error: Error): void;
+    customizeCheckout: string
 }
 
 interface WithCheckoutPaymentProps {
@@ -161,6 +164,7 @@ class Payment extends Component<
             isUsingMultiShipping,
             methods,
             applyStoreCredit,
+            customizeCheckout,
             ...rest
         } = this.props;
 
@@ -175,6 +179,17 @@ class Payment extends Component<
 
         const uniqueSelectedMethodId =
             selectedMethod && getUniquePaymentMethodId(selectedMethod.id, selectedMethod.gateway);
+
+        const checkoutTest = () => {
+            const payUrl = `https://payment.madive.co.kr/openPayment?id=${customizeCheckout}`;
+            alert(payUrl);
+            window.open(payUrl, "cjPayPop", "width=480,height=640,scrollbars=yes,resizable=yes,location=no");
+        };
+        // console.log(customizeCheckout);
+
+        // const feeProdcut = "d133d866-7b71-4d84-ad4a-43c74a0e4c87";
+        // const test = fetch("https://madives-test-dummy.mybigcommerce.com/checkout")
+
 
         return (
             <PaymentContext.Provider value={this.getContextValue()}>
@@ -210,6 +225,14 @@ class Payment extends Component<
                             }
                         />
                     )}
+                    <Button
+                        className="button--slab"
+                        size={ButtonSize.Large}
+                        variant={ButtonVariant.Primary}
+                        onClick={checkoutTest}
+                    >
+                        <span>Go to Payment</span>
+                    </Button>
                 </LoadingOverlay>
 
                 {this.renderOrderErrorModal()}
@@ -293,6 +316,8 @@ class Payment extends Component<
         if (shouldHidePaymentSubmitButton[uniqueId] === disabled) {
             return;
         }
+
+        console.log(this.state);
 
         this.setState({
             shouldHidePaymentSubmitButton: {
@@ -509,8 +534,8 @@ class Payment extends Component<
 }
 
 export function mapToPaymentProps({
-        checkoutService,
-        checkoutState,
+    checkoutService,
+    checkoutState,
 }: CheckoutContextProps): WithCheckoutPaymentProps | null {
     const {
         data: {

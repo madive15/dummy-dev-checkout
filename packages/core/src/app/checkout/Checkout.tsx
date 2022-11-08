@@ -32,6 +32,7 @@ import { TranslatedString, withLanguage, WithLanguageProps } from '../locale';
 import { PromotionBannerList } from '../promotion';
 import { hasSelectedShippingOptions, isUsingMultiShipping, StaticConsignment } from '../shipping';
 import { ShippingOptionExpiredError } from '../shipping/shippingOption';
+// import CashOnDelivery from '../ui/form/CashOnDelivery';
 import { LazyContainer, LoadingNotification, LoadingOverlay } from '../ui/loading';
 import { MobileView } from '../ui/responsive';
 
@@ -42,6 +43,8 @@ import CheckoutSupport from './CheckoutSupport';
 import mapToCheckoutProps from './mapToCheckoutProps';
 import navigateToOrderConfirmation from './navigateToOrderConfirmation';
 import withCheckout from './withCheckout';
+// import AccordionContext from '../ui/accordion/AccordionContext';
+// import { useContext } from 'react';
 
 const Billing = lazy(() =>
     retry(
@@ -150,10 +153,7 @@ export interface WithCheckoutProps {
     subscribeToConsignments(subscriber: (state: CheckoutSelectors) => void): () => void;
 }
 
-class Checkout extends Component<
-    CheckoutProps & WithCheckoutProps & WithLanguageProps,
-    CheckoutState
-> {
+class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguageProps,CheckoutState> {
     stepTracker: StepTracker | undefined;
     bodlService: BodlService | undefined;
 
@@ -175,7 +175,7 @@ class Checkout extends Component<
             this.unsubscribeFromConsignments = undefined;
         }
     }
-
+    
     async componentDidMount(): Promise<void> {
         const {
             checkoutId,
@@ -266,7 +266,7 @@ class Checkout extends Component<
 
     render(): ReactNode {
         const { error } = this.state;
-        let errorModal = null;
+        let errorModal;
 
         if (error) {
             if (isCustomError(error)) {
@@ -296,11 +296,11 @@ class Checkout extends Component<
         const { isPending, loginUrl, promotions = [], steps } = this.props;
 
         const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
-
+        
         if (isCartEmpty) {
             return <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />;
         }
-
+        
         return (
             <LoadingOverlay hideContentWhenLoading isLoading={isRedirecting}>
                 <div className="layout-main">
@@ -392,7 +392,6 @@ class Checkout extends Component<
         const { hasCartChanged, cart, consignments = [] } = this.props;
 
         const { isBillingSameAsShipping, isMultiShippingMode } = this.state;
-
         if (!cart) {
             return;
         }
@@ -455,8 +454,10 @@ class Checkout extends Component<
         );
     }
 
+    
     private renderPaymentStep(step: CheckoutStepStatus): ReactNode {
-        const { consignments, cart, errorLogger } = this.props;
+        const { consignments, cart, errorLogger ,checkoutId } = this.props;
+        
 
         return (
             <CheckoutStep
@@ -482,6 +483,7 @@ class Checkout extends Component<
                         onSubmit={this.navigateToOrderConfirmation}
                         onSubmitError={this.handleError}
                         onUnhandledError={this.handleUnhandledError}
+                        customizeCheckout={checkoutId}
                     />
                 </LazyContainer>
             </CheckoutStep>

@@ -141,7 +141,8 @@ class OrderConfirmation extends Component<
             >
                 <div className="layout-main">
                     <div className="orderConfirmation">
-                        <ThankYouHeader name={order.billingAddress.firstName} />
+                        <ThankYouHeader name={`${order.billingAddress.lastName} ${order.billingAddress.firstName}`} />
+                        
 
                         <OrderStatus
                             order={order}
@@ -214,6 +215,7 @@ class OrderConfirmation extends Component<
 
     private renderOrderSummary(): ReactNode {
         const { order, config } = this.props;
+        console.log(order);
 
         if (!order || !config) {
             return null;

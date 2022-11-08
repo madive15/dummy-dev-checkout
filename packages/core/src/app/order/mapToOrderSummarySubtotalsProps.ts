@@ -14,6 +14,7 @@ export default function mapToOrderSummarySubtotalsProps({
     giftWrappingCostTotal,
     coupons,
     taxes,
+    lineItems
 }: Order): OrderSummarySubtotalsProps {
     return {
         subtotalAmount: baseAmount,
@@ -25,5 +26,6 @@ export default function mapToOrderSummarySubtotalsProps({
         coupons,
         giftCertificates: payments && mapFromPayments(payments),
         taxes,
+        lineitems:lineItems
     };
 }

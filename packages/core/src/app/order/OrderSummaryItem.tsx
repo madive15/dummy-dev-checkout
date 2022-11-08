@@ -20,15 +20,7 @@ export interface OrderSummaryItemOption {
     content: ReactNode;
 }
 
-const OrderSummaryItem: FunctionComponent<OrderSummaryItemProps> = ({
-    amount,
-    amountAfterDiscount,
-    image,
-    name,
-    productOptions,
-    quantity,
-    description,
-}) => (
+const OrderSummaryItem: FunctionComponent<OrderSummaryItemProps> = ({amount,amountAfterDiscount,image,name,productOptions,quantity,description,}) => (
     <div className="product" data-test="cart-item">
         <figure className="product-column product-figure">{image}</figure>
 
@@ -37,7 +29,7 @@ const OrderSummaryItem: FunctionComponent<OrderSummaryItemProps> = ({
                 className="product-title optimizedCheckout-contentPrimary"
                 data-test="cart-item-product-title"
             >
-                {`${quantity} x ${name}`}
+                {`${name} x ${quantity}`}
             </h4>
             {productOptions && productOptions.length > 0 && (
                 <ul

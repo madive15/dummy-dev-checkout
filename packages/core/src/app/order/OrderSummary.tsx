@@ -28,16 +28,22 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
 }) => {
     const nonBundledLineItems = useMemo(() => removeBundledItems(lineItems), [lineItems]);
 
+    console.log(lineItems.physicalItems[0]);
     return (
         <article className="cart optimizedCheckout-orderSummary" data-test="cart">
-            <OrderSummaryHeader>{headerLink}</OrderSummaryHeader>
+            <OrderSummaryHeader>
+                {headerLink}
+            </OrderSummaryHeader>
 
             <OrderSummarySection>
                 <OrderSummaryItems items={nonBundledLineItems} />
             </OrderSummarySection>
 
             <OrderSummarySection>
-                <OrderSummarySubtotals {...orderSummarySubtotalsProps} />
+                <OrderSummarySubtotals 
+                 {...orderSummarySubtotalsProps} 
+                 lineitems={nonBundledLineItems}
+                />
                 {additionalLineItems}
             </OrderSummarySection>
 

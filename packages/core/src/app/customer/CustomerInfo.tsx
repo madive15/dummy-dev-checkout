@@ -23,6 +23,7 @@ interface WithCheckoutCustomerInfoProps {
     methodId: string;
     isSignedIn: boolean;
     isSigningOut: boolean;
+    userName:string;
     signOut(options?: CustomerRequestOptions): Promise<CheckoutSelectors>;
 }
 
@@ -34,6 +35,7 @@ const CustomerInfo: FunctionComponent<CustomerInfoProps & WithCheckoutCustomerIn
     onSignOut = noop,
     onSignOutError = noop,
     signOut,
+    userName,
 }) => {
     const handleSignOut: () => Promise<void> = async () => {
         try {
@@ -60,7 +62,8 @@ const CustomerInfo: FunctionComponent<CustomerInfoProps & WithCheckoutCustomerIn
                 className="customerView-body optimizedCheckout-contentPrimary"
                 data-test="customer-info"
             >
-                {email}
+                {email} 
+                <div>{userName}</div>
             </div>
 
             <div className="customerView-actions">
@@ -92,10 +95,13 @@ function mapToWithCheckoutCustomerInfoProps({
     const billingAddress = getBillingAddress();
     const checkout = getCheckout();
     const customer = getCustomer();
+    // const payment = getPaymentMethods();
+
 
     if (!billingAddress || !checkout || !customer) {
         return null;
     }
+    
 
     const methodId =
         checkout.payments && checkout.payments.length === 1 ? checkout.payments[0].providerId : '';
@@ -106,6 +112,7 @@ function mapToWithCheckoutCustomerInfoProps({
         isSignedIn: canSignOut(customer, checkout, methodId),
         isSigningOut: isSigningOut(),
         signOut: checkoutService.signOutCustomer,
+        userName: customer.fullName
     };
 }
 
