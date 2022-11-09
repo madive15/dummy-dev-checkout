@@ -54,6 +54,7 @@
             "billed_amount_text": "*You will be charged and invoiced {total} ({code}) for this order.",
             "based_on_currency_text": "Based on {total} {code}",
             "cart_heading": "Order Summary",
+            "cash_on_delivery":"Cash on Delivery",
             "digital_item_text": "Digital Item",
             "discount_text": "Discount",
             "downloads_action": "Go to Downloads",

@@ -54,12 +54,12 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
 
             {/* 
                 Test Component
-                amount 같은 경우 lineitem.physicalitems[sku값 갖고있는 인덱스]의 listPrice 호출111
+                amount 같은 경우 lineitem.physicalitems[sku값 갖고있는 인덱스]의 listPrice 호출
              */}
 
             <OrderSummaryTest
                 amount={ index > -1 ? lineitems!.physicalItems[index]!.listPrice : 0}
-                label="testtttttt"
+                label={<TranslatedString id="cart.cash_on_delivery" />}
                 testId="cart-cod"
             />
 

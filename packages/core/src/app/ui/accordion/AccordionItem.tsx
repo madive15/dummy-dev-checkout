@@ -1,7 +1,8 @@
 import classNames from 'classnames';
-import React, { FunctionComponent, memo, ReactNode, useCallback, useContext } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useContext  } from 'react';
 import { CSSTransition } from 'react-transition-group';
-
+import { Cart,Consignment, } from '@bigcommerce/checkout-sdk';
+import { CheckoutContextProps, withCheckout } from '../../checkout';
 import AccordionContext from './AccordionContext';
 
 export interface AccordionItemProps {
@@ -15,12 +16,20 @@ export interface AccordionItemProps {
     headerContent(props: AccordionItemHeaderProps): ReactNode;
 }
 
+
+export interface WithCheckoutCODProps {
+    cart: Cart;
+    consignments: Consignment[];
+    isInitializing: boolean;
+    isLoading?: boolean;
+}
+
 export interface AccordionItemHeaderProps {
     isSelected: boolean;
     onToggle(id: string): void;
 }
 
-const AccordionItem: FunctionComponent<AccordionItemProps> = ({
+const AccordionItem: FunctionComponent<AccordionItemProps & WithCheckoutCODProps> = ({
     bodyClassName = 'accordion-item-body',
     children,
     className = 'accordion-item',
@@ -28,6 +37,7 @@ const AccordionItem: FunctionComponent<AccordionItemProps> = ({
     headerClassName = 'accordion-item-header',
     headerClassNameSelected = 'accordion-item-header--selected',
     headerContent,
+    cart,
     itemId,
 }) => {
     const { onToggle, selectedItemId } = useContext(AccordionContext);
@@ -40,6 +50,19 @@ const AccordionItem: FunctionComponent<AccordionItemProps> = ({
             }
         });
     }, []);
+    
+    
+    const hasDigitalItem = cart.lineItems.digitalItems;
+    
+    if(hasDigitalItem.length >= 1){
+        if(itemId === 'cod'){
+            return null;
+        }
+    }
+
+    // if(itemId === 'cod'){
+    //     return null;
+    // }
 
     return (
         <li
@@ -66,4 +89,45 @@ const AccordionItem: FunctionComponent<AccordionItemProps> = ({
     );
 };
 
-export default memo(AccordionItem);
+
+export function mapToDonationProps({
+    checkoutState,
+}: CheckoutContextProps): WithCheckoutCODProps | null {
+    const {
+        data: {
+            getCart,
+            getCheckout,
+            getConsignments,
+        },
+        statuses: {
+            isLoadingShippingOptions,
+            isUpdatingConsignment,
+            isUpdatingCheckout,
+        },
+    } = checkoutState;
+
+    const checkout = getCheckout();
+    const cart = getCart();
+    const consignments = getConsignments() || [];
+
+    if (!checkout || !cart) {
+        return null;
+    }
+
+    const isLoading = (
+        isLoadingShippingOptions() ||
+        isUpdatingConsignment() ||
+        isUpdatingCheckout()
+    );
+
+
+    return {
+        cart,
+        consignments,
+        isInitializing: isUpdatingCheckout(),
+        isLoading,
+    };
+}
+
+export default withCheckout(mapToDonationProps)(AccordionItem);
+// export default memo(AccordionItem);
