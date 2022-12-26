@@ -15,7 +15,7 @@ import {
 } from '@bigcommerce/checkout-sdk';
 import classNames from 'classnames';
 import { find, findIndex } from 'lodash';
-import React, { Component, lazy, ReactNode } from 'react';
+import React, { Component, lazy, ReactNode} from 'react';
 
 import { StaticBillingAddress } from '../billing';
 import { EmptyCartMessage } from '../cart';
@@ -32,10 +32,8 @@ import { TranslatedString, withLanguage, WithLanguageProps } from '../locale';
 import { PromotionBannerList } from '../promotion';
 import { hasSelectedShippingOptions, isUsingMultiShipping, StaticConsignment } from '../shipping';
 import { ShippingOptionExpiredError } from '../shipping/shippingOption';
-// import CashOnDelivery from '../ui/form/CashOnDelivery';
 import { LazyContainer, LoadingNotification, LoadingOverlay } from '../ui/loading';
 import { MobileView } from '../ui/responsive';
-
 import CheckoutStep from './CheckoutStep';
 import CheckoutStepStatus from './CheckoutStepStatus';
 import CheckoutStepType from './CheckoutStepType';
@@ -43,8 +41,7 @@ import CheckoutSupport from './CheckoutSupport';
 import mapToCheckoutProps from './mapToCheckoutProps';
 import navigateToOrderConfirmation from './navigateToOrderConfirmation';
 import withCheckout from './withCheckout';
-// import AccordionContext from '../ui/accordion/AccordionContext';
-// import { useContext } from 'react';
+
 
 const Billing = lazy(() =>
     retry(
@@ -296,11 +293,11 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
         const { isPending, loginUrl, promotions = [], steps } = this.props;
 
         const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
-        
+
         if (isCartEmpty) {
             return <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />;
         }
-        
+
         return (
             <LoadingOverlay hideContentWhenLoading isLoading={isRedirecting}>
                 <div className="layout-main">
@@ -388,6 +385,9 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
         );
     }
 
+
+
+
     private renderShippingStep(step: CheckoutStepStatus): ReactNode {
         const { hasCartChanged, cart, consignments = [] } = this.props;
 
@@ -453,12 +453,13 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
             </CheckoutStep>
         );
     }
-
+    
     
     private renderPaymentStep(step: CheckoutStepStatus): ReactNode {
-        const { consignments, cart, errorLogger ,checkoutId } = this.props;
+        const { consignments, cart, errorLogger ,checkoutId} = this.props;
         
 
+        console.log(checkoutId)
         return (
             <CheckoutStep
                 {...step}
@@ -484,6 +485,7 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
                         onSubmitError={this.handleError}
                         onUnhandledError={this.handleUnhandledError}
                         customizeCheckout={checkoutId}
+                        customzieCart={cart}
                     />
                 </LazyContainer>
             </CheckoutStep>

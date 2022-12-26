@@ -122,7 +122,7 @@
             "guest_could_login": "Looks like you have an account. Sign in with {email} for a faster checkout.",
             "guest_must_login": "Looks like you have an account. Please sign in to proceed with {email}, or use another email.",
             "guest_temporary_disabled": "Guest checkout is temporarily disabled. Please sign in or <a href=\"{url}\" target=\"_blank\">create an account</a> to continue.",
-            "customer_heading": "Customer",
+            "customer_heading": "en 고객",
             "email_invalid_error": "Email address must be valid",
             "email_label": "Email",
             "email_required_error": "Email address is required",
@@ -386,7 +386,14 @@
                 "user_authorization_error": "There was an error while processing your payment. Please contact us.",
                 "vaulting_service_unavailable": "Vaulting service is currently not available.",
                 "voided_transaction": "Unable to process your payment because the transaction has already been voided. Please try again or contact us."
-            }
+            },
+            "korea_payment_Creditcard":"신용카드",
+            "korea_payment_PCO":"페이코",
+            "korea_payment_Account":"계좌이체",
+            "korea_payment_VirtualAccount":"가상계좌",
+            "korea_payment_NVP":"네이버페이",
+            "korea_payment_KKO":"카카오페이",
+            "korea_payment_HPP":"휴대폰결제"
         },
         "redeemable": {
             "applied_text": "Applied",

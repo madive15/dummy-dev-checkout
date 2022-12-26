@@ -53,7 +53,7 @@
     line-height: 2.2;
     margin-bottom: 0;
     min-height: $checklist-label-height;
-    padding: $checklist-spacing $checklist-spacingRight $checklist-spacing $checklist-spacingLeft--small;
+    padding: $checklist-spacing $checklist-spacingRight $checklist-spacing $checklist-spacingRight;
     position: relative;
 
     @include breakpoint("small") {

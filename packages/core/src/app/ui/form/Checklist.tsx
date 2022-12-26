@@ -25,9 +25,8 @@ export interface ChecklistContextProps {
 
 export const ChecklistContext = createContext<ChecklistContextProps | undefined>(undefined);
 
-const Checklist: FunctionComponent<
-    ChecklistProps & ConnectFormikProps<{ [key: string]: string }>
-> = ({ formik: { setFieldValue }, name, onSelect = noop, ...props }) => {
+const Checklist: FunctionComponent<ChecklistProps & ConnectFormikProps<{ [key: string]: string }>> =
+ ({ formik: { setFieldValue }, name, onSelect = noop, ...props }) => {
     const handleSelect = useCallback(
         (value: string) => {
             setFieldValue(name, value);

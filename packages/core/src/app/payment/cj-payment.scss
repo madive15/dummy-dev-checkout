@@ -1,0 +1,93 @@
+@import '../ui/Base';
+
+.payment-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    button.korea-btn {
+        background-color: #fff;
+        border: 1px solid #d4d4d4;
+        border-radius: 8px;
+        box-sizing: border-box;
+        color: #6c6c6c;
+        margin-bottom: 0;
+        padding: 0;
+        padding-bottom: 20px;
+        padding-top: 70px;
+        position: relative;
+        width: calc((100% / 4) - 9px);
+
+        &::before {
+            background-size: 100%;
+            border-radius: 100%;
+            content: '';
+            height: 40px;
+            left: 50%;
+            position: absolute;
+            top: 17px;
+            transform: translateX(-50%);
+            width: 40px;
+        }
+
+        &.credit {
+            &::before {
+                background-image: url('../../static/img/icon_Card.png');
+                border-radius: unset;
+            }
+        }
+
+        &.pco {
+            &::before {
+                background-image: url('../../static/img/icon_payco.png');
+            }
+        }
+
+        &.account {
+            &::before {
+                background-image: url('../../static/img/icon_account.png');
+            }
+        }
+
+        &.virtualAccount {
+            &::before {
+                background-image: url('../../static/img/icon_virtual.png');
+            }
+        }
+
+        &.nvp {
+            &::before {
+                background-image: url('../../static/img/icon_naverpay.png');
+            }
+        }
+
+        &.kakao {
+            &::before {
+                background-image: url('../../static/img/icon_kakaopay.png');
+            }
+        }
+
+        &.hpp {
+            &::before {
+                background-image: url('../../static/img/icon_cellularPay.png');
+                border-radius: unset;
+            }
+        }
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .payment-wrap {
+        button.korea-btn {
+            width: calc((100% / 3) - 9px);
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .payment-wrap {
+        button.korea-btn {
+            width: calc((100% / 2) - 9px);
+        }
+    }
+}

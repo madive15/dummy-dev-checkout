@@ -13,7 +13,6 @@ const Input = forwardRef(
         ref: Ref<HTMLInputElement>,
     ) => {
         const notUseFloatingLabelFieldNames = ['orderComment', 'redeemableCode'];
-
         return (
             <input
                 {...{

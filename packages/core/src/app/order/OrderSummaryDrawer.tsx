@@ -5,7 +5,7 @@ import {
 } from '@bigcommerce/checkout-sdk';
 import classNames from 'classnames';
 import React, { FunctionComponent, memo, ReactNode, useCallback } from 'react';
-
+import { findIndex } from 'lodash';
 import { ShopperCurrency } from '../currency';
 import { TranslatedString } from '../locale';
 import { IconGiftCertificate } from '../ui/icon';
@@ -89,6 +89,11 @@ const OrderSummaryDrawer: FunctionComponent<
             total,
         ],
     );
+    const index = findIndex(lineItems!.physicalItems!, { sku: "COD1" }),
+          index2 = findIndex(lineItems!.physicalItems!, { sku: "COD2" }),
+          index3 = findIndex(lineItems!.physicalItems!, { sku: "COD3" }),
+          index4 = findIndex(lineItems!.physicalItems!, { sku: "COD4" });
+
 
     return (
         <ModalTrigger modal={renderModal}>
@@ -109,7 +114,20 @@ const OrderSummaryDrawer: FunctionComponent<
                     <div className="cartDrawer-body">
                         <h3 className="cartDrawer-items optimizedCheckout-headingPrimary">
                             <TranslatedString
-                                data={{ count: getItemsCount(lineItems) }}
+                                data={{ 
+                                    count: 
+                                    index > -1 ? getItemsCount(lineItems) - lineItems!.physicalItems[index]!.quantity 
+                                    :(index2 > -1 ?
+                                        getItemsCount(lineItems) - lineItems!.physicalItems[index2]!.quantity     
+                                        :
+                                        index3 > -1 ?
+                                        getItemsCount(lineItems) - lineItems!.physicalItems[index3]!.quantity   
+                                        :
+                                        index4 > -1 ?
+                                        getItemsCount(lineItems) - lineItems!.physicalItems[index4]!.quantity   
+                                        : getItemsCount(lineItems) 
+                                    )
+                                     } }
                                 id="cart.item_count_text"
                             />
                         </h3>

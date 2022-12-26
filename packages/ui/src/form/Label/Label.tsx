@@ -10,7 +10,7 @@ const Label: FunctionComponent<LabelProps> = ({ children, className, hidden, tes
     <label
         {...rest}
         className={classNames(
-            className || 'form-label',
+            className || 'form-label11',
             { 'is-srOnly': hidden },
             'optimizedCheckout-form-label',
         )}

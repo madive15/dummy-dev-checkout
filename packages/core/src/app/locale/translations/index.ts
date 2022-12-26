@@ -1,4 +1,4 @@
-import FALLBACK_TRANSLATIONS from './en.json';
+import FALLBACK_TRANSLATIONS from './ko.json';
 
 export const FALLBACK_LOCALE = 'en';
 

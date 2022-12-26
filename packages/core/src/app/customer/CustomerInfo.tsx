@@ -97,8 +97,6 @@ function mapToWithCheckoutCustomerInfoProps({
     const customer = getCustomer();
     // const payment = getPaymentMethods();
 
-    
-
     if (!billingAddress || !checkout || !customer) {
         return null;
     }

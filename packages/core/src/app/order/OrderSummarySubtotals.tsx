@@ -38,11 +38,14 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
     onRemovedCoupon,
 }) => {
     
-    
     const index = findIndex(lineitems!.physicalItems!, { sku: "COD1" });
+    const index2 = findIndex(lineitems!.physicalItems!, { sku: "COD2" });
+    const index3 = findIndex(lineitems!.physicalItems!, { sku: "COD3" });
+    const index4 = findIndex(lineitems!.physicalItems!, { sku: "COD4" });
+    
     // index는 sku값 COD1 을 갖고있는 index를 찾아줌. by loadsh.findIndex();
-    console.log(index);
 
+    console.log(index);
     return (
         <>
             <OrderSummaryPrice
@@ -53,12 +56,24 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
             />
 
             {/* 
-                Test Component
+                Test Component 
                 amount 같은 경우 lineitem.physicalitems[sku값 갖고있는 인덱스]의 listPrice 호출
              */}
 
             <OrderSummaryTest
-                amount={ index > -1 ? lineitems!.physicalItems[index]!.listPrice : 0}
+                amount={ 
+                    index > -1 ? lineitems!.physicalItems[index]!.listPrice
+                    : (index2 > -1 ? 
+                        lineitems.physicalItems[index2]!.listPrice
+                        :
+                        index3 > -1 ? 
+                        lineitems.physicalItems[index3]!.listPrice
+                        :
+                        index4 > -1 ? 
+                        lineitems.physicalItems[index4]!.listPrice
+                        :0
+                    )
+                }
                 label={<TranslatedString id="cart.cash_on_delivery" />}
                 testId="cart-cod"
             />

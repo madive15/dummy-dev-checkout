@@ -12,6 +12,36 @@
 //
 // -----------------------------------------------------------------------------
 
+.shippingOptions-container {
+    &.form-fieldset {
+        .form-checklist-checkbox {
+            &:checked ~ {
+                .form-label {
+                    &::after {
+                        display: none !important;
+                    }
+
+                    &::before {
+                        border-color: transparent !important;
+                    }
+                }
+            }
+
+            ~ .form-label {
+                &::after {
+                    display: none !important;
+                }
+
+                &::before {
+                    display: none !important;
+                }
+                @include breakpoint("small") {
+                    padding-left: 2.25rem !important;
+                }
+            }
+        }
+    }
+}
 @if $exportCSS--forms { // 1
 
     .form {

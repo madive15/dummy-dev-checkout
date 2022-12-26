@@ -54,7 +54,10 @@ const OrderSummaryModal: FunctionComponent<
             <OrderSummaryItems items={lineItems} />
         </OrderSummarySection>
         <OrderSummarySection>
-            <OrderSummarySubtotals {...orderSummarySubtotalsProps} />
+            <OrderSummarySubtotals 
+                {...orderSummarySubtotalsProps} 
+                lineitems={lineItems}
+            />
             {additionalLineItems}
         </OrderSummarySection>
         <OrderSummarySection>
