@@ -1,5 +1,7 @@
 # Checkout JS
 
+맥OS 환경에서 가능.
+
 Checkout JS is a browser-based application providing a seamless UI for BigCommerce shoppers to complete their checkout. It is also known as [Optimized One-Page Checkout](https://support.bigcommerce.com/s/article/Optimized-Single-Page-Checkout), which is currently the recommended checkout option for all BigCommerce stores.
 
 ## Requirements
@@ -19,7 +21,7 @@ Once you have cloned the repository and set up your environment, you can start d
 First, you have to pull in the dependencies required for the application.
 
 ```sh
-npm ci
+npm ci (Dependency package 설치)
 ```
 
 After that, you can make changes to the source code and run the following command to build it.
@@ -48,7 +50,8 @@ Follow [this guide](https://developer.bigcommerce.com/stencil-docs/customizing-c
 
 If you want to test your checkout implementation, you can run:
 ```sh
-npm run dev:server
+npm run dev:server // 커맨드 안먹힘.
+npm run dev & npm run dev:server //이걸로 해야함.
 ```
 
 And enter the local URL for `auto-loader-dev.js` in Checkout Settings, e.g `http://127.0.0.1:8080/auto-loader-dev.js`
