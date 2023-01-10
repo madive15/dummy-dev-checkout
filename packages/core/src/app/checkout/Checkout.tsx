@@ -294,6 +294,9 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
 
         const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
 
+       
+        console.log(steps);
+
         if (isCartEmpty) {
             return <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />;
         }
@@ -395,7 +398,7 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
         if (!cart) {
             return;
         }
-
+        
         return (
             <CheckoutStep
                 {...step}
@@ -459,7 +462,7 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
         const { consignments, cart, errorLogger ,checkoutId} = this.props;
         
 
-        console.log(checkoutId)
+        
         return (
             <CheckoutStep
                 {...step}
@@ -520,6 +523,8 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
         const { clearError, error, steps } = this.props;
         const { activeStepType } = this.state;
         const step = find(steps, { type });
+        
+        console.log(this.props);
 
         if (!step) {
             return;

@@ -271,6 +271,9 @@ export function mapToDonationProps({
     const checkout = getCheckout();
     const cart = getCart();
     const consignments = getConsignments() || [];
+    
+    console.log(checkoutService);
+    console.log(checkoutState);
 
     if (!checkout || !cart) {
         return null;

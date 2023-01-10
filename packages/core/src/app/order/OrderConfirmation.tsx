@@ -149,7 +149,6 @@ class OrderConfirmation extends Component<
             .then(res => {console.log(res)})
         }
 
-        console.log("test!!");
     
         return (
             <div

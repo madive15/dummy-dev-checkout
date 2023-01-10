@@ -8,6 +8,7 @@ import { findIndex } from 'lodash';
 
 
 
+
 export interface OrderSummarySubtotalsProps {
     lineitems:LineItemMap;
     coupons: Coupon[];
@@ -45,7 +46,6 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
     
     // index는 sku값 COD1 을 갖고있는 index를 찾아줌. by loadsh.findIndex();
 
-    console.log(index);
     return (
         <>
             <OrderSummaryPrice

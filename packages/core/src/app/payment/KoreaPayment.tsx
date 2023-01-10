@@ -5,9 +5,10 @@ import { Button, ButtonSize, ButtonVariant } from '../ui/button';
 
 interface KoreaPaymentProps {
   params: string,
-  imgName:string,
+  imgName: string,
   krPaymentMethods(payName: string): void
 }
+
 
 const KoreaPayment = ({
   params,
@@ -15,17 +16,18 @@ const KoreaPayment = ({
   krPaymentMethods
 }: KoreaPaymentProps) => {
   return (
-    <Button
-      className={`button--slab korea-btn ${imgName}`}
-      size={ButtonSize.Large}
-      variant={ButtonVariant.Primary}
-      onClick={() => { krPaymentMethods(params) }}
-    >
-      {/* <span>{name}</span> */}
-      <TranslatedString
-        id={`payment.korea_payment_${params}`}
-      />
-    </Button>
+    <>
+      <Button
+        className={`button--slab korea-btn ${imgName}`}
+        size={ButtonSize.Large}
+        variant={ButtonVariant.Primary}
+        onClick={() => { krPaymentMethods(params) }}
+      >
+        <TranslatedString
+          id={`payment.korea_payment_${params}`}
+        />
+      </Button>
+    </>
   );
 };
 

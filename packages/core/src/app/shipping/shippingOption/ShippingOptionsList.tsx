@@ -1,16 +1,15 @@
-import { Cart,OrderShippingConsignment, ShippingOption, Consignment, RequestOptions, CheckoutParams, CheckoutSelectors } from '@bigcommerce/checkout-sdk';
+import { Cart, OrderShippingConsignment, ShippingOption, Consignment, RequestOptions, CheckoutParams, CheckoutSelectors } from '@bigcommerce/checkout-sdk';
 import React, { FunctionComponent, memo, useCallback, useState, useEffect } from 'react'; //add memo 
 import { CheckoutContextProps, withCheckout } from '../../checkout';
 import { EMPTY_ARRAY } from '../../common/utility';
 import { Checklist, ChecklistItem } from '../../ui/form';
 import { LoadingOverlay } from '../../ui/loading';
-
 import StaticShippingOption from './StaticShippingOption';
 
 interface ShippingOptionListItemProps {
     consignmentId: string;
     shippingOption: ShippingOption;
-    test?:OrderShippingConsignment
+    test?: OrderShippingConsignment
 }
 const ShippingOptionListItem: FunctionComponent<ShippingOptionListItemProps> = ({
     consignmentId,
@@ -112,6 +111,7 @@ const ShippingOptionsList: FunctionComponent<ShippingOptionListProps & WithCheck
             putShippingCost(SHPPING_COST[0].id);
         }
     }, [])
+
 
     return (
         <LoadingOverlay isLoading={isLoading}>

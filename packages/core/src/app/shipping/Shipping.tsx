@@ -156,6 +156,8 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
             />;
         }
 
+        console.log(this.props);
+
         return <div className="checkout-form">
             <ShippingHeader
                 isGuest={ isGuest }

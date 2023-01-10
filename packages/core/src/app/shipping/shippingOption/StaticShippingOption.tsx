@@ -14,7 +14,9 @@ interface StaticShippingOptionProps {
 const StaticShippingOption: React.FunctionComponent<StaticShippingOptionProps> = ({
     displayAdditionalInformation = true,
     method,
-}) => {
+}) => 
+{ 
+    console.log(method);
     return (
         <div className="shippingOption shippingOption--alt">
             {method.imageUrl && (
