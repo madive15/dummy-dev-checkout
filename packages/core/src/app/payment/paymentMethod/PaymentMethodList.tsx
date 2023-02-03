@@ -153,39 +153,6 @@ const PaymentMethodList: FunctionComponent<
 
             }
         }
-
-        // useEffect(() => {
-        //     { itemAmount < 1000 && addProduct(index, 1) };
-        //     { itemAmount >= 1000 && itemAmount < 3000 && addProduct(index2, 2) };
-        //     { itemAmount >= 3000 && itemAmount < 5000 && addProduct(index3, 3) };
-        //     { itemAmount >= 8000 && itemAmount < 50000 && addProduct(index4, 4) };
-        // }, [values.paymentProviderRadio])
-
-        // const skus = ["COD1", "COD2", "COD3", "COD4"];
-        // const indices = skus.map(sku => findIndex(cart.lineItems.physicalItems, { sku }));
-        // const conditions = [[itemAmount < 1000, [indices[0], 1]],
-        // [itemAmount >= 1000 && itemAmount < 3000, [indices[1], 2]],
-        // [itemAmount >= 3000 && itemAmount < 5000, [indices[2], 3]],
-        // [itemAmount >= 8000 && itemAmount < 50000, [indices[3], 4]]
-        // ];
-
-        // useEffect(() => {
-        //     switch (true) {
-        //         case itemAmount < 1000:
-        //             addProduct(index, 1);
-        //             break;
-        //         case itemAmount >= 1000 && itemAmount < 3000:
-        //             addProduct(index2, 2);
-        //             break;
-        //         case itemAmount >= 3000 && itemAmount < 5000:
-        //             addProduct(index3, 3);
-        //             break;
-        //         case itemAmount >= 8000 && itemAmount < 50000:
-        //             addProduct(index4, 4);
-        //             break;
-        //     }
-        // }, [values.paymentProviderRadio]);
-
         const addProductByAmount = (amount: number) => {
             switch (true) {
                 case amount < 1000:
