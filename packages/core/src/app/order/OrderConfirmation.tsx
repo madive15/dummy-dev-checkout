@@ -135,13 +135,13 @@ class OrderConfirmation extends Component<
         } = config;
 
         const TEST_URL = "https://yamato.madive.co.kr";
-        const cartItem =  order.lineItems.digitalItems ; //order.lineItems.physicalItems ||
-        const cartItem2 = order.lineItems.physicalItems;
+        const cartItem =  order.lineItems.digitalItems || order.lineItems.physicalItems; //order.lineItems.physicalItems ||
+        // const cartItem2 = order.lineItems.physicalItems;
 
         const filterItem = cartItem.find(item => item.sku.includes('COD'));
-        const filterItem2 = cartItem2.find(item => item.sku.includes('COD'));
+        // const filterItem2 = cartItem2.find(item => item.sku.includes('COD'));
 
-        if (filterItem || filterItem2) {
+        if (filterItem) {
             
             console.log(`${TEST_URL}/api/order/membershipUpdate.json?membershipId=${order.customerId}-${order.orderId}`);
 
@@ -232,8 +232,7 @@ class OrderConfirmation extends Component<
 
     private renderOrderSummary(): ReactNode {
         const { order, config } = this.props;
-        console.log(order);
-
+        
         if (!order || !config) {
             return null;
         }

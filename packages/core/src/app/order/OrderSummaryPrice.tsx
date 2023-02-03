@@ -69,6 +69,8 @@ class OrderSummaryPrice extends Component<OrderSummaryPriceProps, OrderSummaryPr
 
         const { highlight } = this.state;
         const displayValue = getDisplayValue(amount, zeroLabel);
+        console.log(this.props);
+
 
         return (
             <div data-test={testId}>

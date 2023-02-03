@@ -1,5 +1,5 @@
 import { Cart, OrderShippingConsignment, ShippingOption, Consignment, RequestOptions, CheckoutParams, CheckoutSelectors } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent, memo, useCallback, useState, useEffect } from 'react'; //add memo 
+import React, { FunctionComponent, memo, useCallback, useState, useEffect } from 'react';
 import { CheckoutContextProps, withCheckout } from '../../checkout';
 import { EMPTY_ARRAY } from '../../common/utility';
 import { Checklist, ChecklistItem } from '../../ui/form';
@@ -11,6 +11,8 @@ interface ShippingOptionListItemProps {
     shippingOption: ShippingOption;
     test?: OrderShippingConsignment
 }
+
+
 const ShippingOptionListItem: FunctionComponent<ShippingOptionListItemProps> = ({
     consignmentId,
     shippingOption,
@@ -45,7 +47,6 @@ export interface ShippingOptionListProps {
 
     onSelectedOption(consignmentId: string, shippingOptionId: string): void;
 }
-
 
 export interface WithCheckoutShippingProps {
     cart: Cart;
@@ -96,8 +97,6 @@ const ShippingOptionsList: FunctionComponent<ShippingOptionListProps & WithCheck
             .catch(err => console.error(err));
     }
 
-    // const SHPPING_COST_ID = "e7596fca2d5bc3ff4011a84bd1d763b9";
-    // const FREE_SHIPPING_ID = "4dcbf24f457dd67d5f89bcf374e0bc9b";
 
     useEffect(() => {
         // 배송비 이상일때 
@@ -151,10 +150,6 @@ export function mapToDonationProps({
     const checkout = getCheckout();
     const cart = getCart();
     const consignments = getConsignments() || [];
-    // const shipping = getShippingOptions()
-
-    // console.log(checkoutState);
-    // console.log(checkoutService);
 
     if (!checkout || !cart) {
         return null;

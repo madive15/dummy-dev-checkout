@@ -10,6 +10,7 @@ import getUniquePaymentMethodId, { parseUniquePaymentMethodId } from './getUniqu
 import PaymentMethodTitle from './PaymentMethodTitle';
 import PaymentMethodV2 from './PaymentMethodV2';
 import { Modal } from '../../ui/modal';
+import ModalContents from '../../ui/modal/ModalContents';
 
 
 
@@ -31,6 +32,7 @@ export interface WithCheckoutCODProps {
     loadShippingOptions?(): Promise<CheckoutSelectors>;
     updateCheckout?(payload: CheckoutRequestBody): Promise<CheckoutSelectors>;
 }
+
 
 function getPaymentMethodFromListValue(methods: PaymentMethod[], value: string): PaymentMethod {
     const { gatewayId: gateway, methodId: id } = parseUniquePaymentMethodId(value);
@@ -64,14 +66,9 @@ const PaymentMethodList: FunctionComponent<
             [methods, onSelect],
         );
 
-        const index = findIndex(cart!.lineItems.physicalItems, { sku: "COD1" });
-        const index2 = findIndex(cart!.lineItems.physicalItems, { sku: "COD2" });
-        const index3 = findIndex(cart!.lineItems.physicalItems, { sku: "COD3" });
-        const index4 = findIndex(cart!.lineItems.physicalItems, { sku: "COD4" });
-        
         const cartId = cart.id;
         const itemAmount = cart.baseAmount;
-    
+
         const _updateShippingCostTotal = () => {
             return new Promise(async (resolve, reject) => {
                 const arrConsignments = consignments.map(consignment => {
@@ -83,9 +80,7 @@ const PaymentMethodList: FunctionComponent<
                 for (let i = 0; i < arrConsignments.length; i++) {
                     const consignmentId = arrConsignments[i].consignmentId
                     const shippingOptionId = arrConsignments[i].selectedShippingOptionId
-
                     // if (!shippingOptionId) return
-
                     await fetch(`/api/storefront/checkouts/${cart.id}/consignments/${consignmentId}?include=consignments.availableShippingOptions%2Ccart.lineItems.physicalItems.options%2Ccart.lineItems.digitalItems.options%2Ccustomer%2Cpromotions.banners`, {
                         method: 'PUT',
                         credentials: 'same-origin',
@@ -105,69 +100,121 @@ const PaymentMethodList: FunctionComponent<
                 }
                 resolve(true)
             })
-        }
+        };
 
         // Control modal 
-        const [modal, setModal] = useState<boolean>(false)
+        const [modal, setModal] = useState<boolean>(false);
         const closeModal = () => { setModal(false); }
 
+        // COD sku index
+        const index = findIndex(cart.lineItems.physicalItems, { sku: "COD1" });
+        const index2 = findIndex(cart.lineItems.physicalItems, { sku: "COD2" });
+        const index3 = findIndex(cart.lineItems.physicalItems, { sku: "COD3" });
+        const index4 = findIndex(cart.lineItems.physicalItems, { sku: "COD4" });
+
         // COD FEE product function
-       const addProduct = (productIndex: any, codType:number) => {
-            if (values.paymentProviderRadio === 'cod' && productIndex === -1 || productIndex === null || productIndex === undefined) {
+        async function addProduct(productIndex: number, codType: number) {
+            const hasPhysicalItems = cart.lineItems.physicalItems.length >= 1;
+            const noDigitalItem = cart.lineItems.digitalItems.length === 0;
+            const isCODSelected = values.paymentProviderRadio === 'cod';
+            const hasNoProduct = productIndex === -1 || productIndex === null || productIndex === undefined;
+
+            if (isCODSelected && hasPhysicalItems && noDigitalItem && hasNoProduct) {
                 setModal(true);
-                fetch(`/cart.php?action=add&sku=COD${codType}&qty=1`).then(res => {
+                try {
+                    const res = await fetch(`/cart.php?action=add&sku=COD${codType}&qty=1`);
                     console.log(res);
-                    _updateShippingCostTotal().then(data => {           
-                        console.log(data);
-                        loadCheckout(cartId);
-                    })
-                })
-            }
-            if (productIndex === -1 || productIndex === undefined || productIndex === null) {
-                return;
-            }
-            // Remove COD FEE pruduct
-            if (values.paymentProviderRadio !== 'cod') {
-                const cartId = cart.id;
+                    const data = await _updateShippingCostTotal();
+                    console.log(data);
+                    loadCheckout(cartId);
+                } catch (error) {
+                    console.error(error);
+                }
+
+            } else if (values.paymentProviderRadio !== 'cod') {
                 const itemId = cart.lineItems.physicalItems[productIndex].id!;
-                fetch(`/api/storefront/carts/${cartId}/items/${itemId}`, {
-                    method: "DELETE",
-                    credentials: "same-origin",
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-                    .then(response => {
-                        console.log(response);
-                        _updateShippingCostTotal().then(data => {
-                            console.log(data);
-                            loadCheckout(cartId);
-                        })
-                    })
+                try {
+                    const response = await fetch(`/api/storefront/carts/${cart.id}/items/${itemId}`, {
+                        method: 'DELETE',
+                        credentials: 'same-origin',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    console.log(response);
+                    const data = await _updateShippingCostTotal();
+                    console.log(data);
+                    loadCheckout(cart.id);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (hasNoProduct) {
+                return;
+
             }
         }
 
-    
+        // useEffect(() => {
+        //     { itemAmount < 1000 && addProduct(index, 1) };
+        //     { itemAmount >= 1000 && itemAmount < 3000 && addProduct(index2, 2) };
+        //     { itemAmount >= 3000 && itemAmount < 5000 && addProduct(index3, 3) };
+        //     { itemAmount >= 8000 && itemAmount < 50000 && addProduct(index4, 4) };
+        // }, [values.paymentProviderRadio])
 
-        useEffect(()=>{
-            {itemAmount < 1000 && addProduct(index,1)};
-            {itemAmount >= 1000 && itemAmount < 3000 && addProduct(index2,2)};
-            {itemAmount >= 3000 && itemAmount < 5000 && addProduct(index3,3)};
-            {itemAmount >= 8000 && itemAmount < 10001 && addProduct(index4,4)};
-        },[values.paymentProviderRadio])
+        // const skus = ["COD1", "COD2", "COD3", "COD4"];
+        // const indices = skus.map(sku => findIndex(cart.lineItems.physicalItems, { sku }));
+        // const conditions = [[itemAmount < 1000, [indices[0], 1]],
+        // [itemAmount >= 1000 && itemAmount < 3000, [indices[1], 2]],
+        // [itemAmount >= 3000 && itemAmount < 5000, [indices[2], 3]],
+        // [itemAmount >= 8000 && itemAmount < 50000, [indices[3], 4]]
+        // ];
+
+        // useEffect(() => {
+        //     switch (true) {
+        //         case itemAmount < 1000:
+        //             addProduct(index, 1);
+        //             break;
+        //         case itemAmount >= 1000 && itemAmount < 3000:
+        //             addProduct(index2, 2);
+        //             break;
+        //         case itemAmount >= 3000 && itemAmount < 5000:
+        //             addProduct(index3, 3);
+        //             break;
+        //         case itemAmount >= 8000 && itemAmount < 50000:
+        //             addProduct(index4, 4);
+        //             break;
+        //     }
+        // }, [values.paymentProviderRadio]);
+
+        const addProductByAmount = (amount: number) => {
+            switch (true) {
+                case amount < 1000:
+                    addProduct(index, 1);
+                    break;
+                case amount >= 1000 && amount < 3000:
+                    addProduct(index2, 2);
+                    break;
+                case amount >= 3000 && amount < 5000:
+                    addProduct(index3, 3);
+                    break;
+                case amount >= 8000 && amount < 50000:
+                    addProduct(index4, 4);
+                    break;
+            }
+        };
+
+        useEffect(() => {
+            addProductByAmount(itemAmount);
+        }, [itemAmount, values.paymentProviderRadio]);
+
 
         return (
             <>
                 <Modal isOpen={modal}>
-                    <div className="btn-wrap" style={{ display: "flex", flexDirection: "column" }}>
-                        <p style={{ textAlign: "center", fontSize: "20px" }}>代金引換でお支払いする際、440円の手数料が追加されます。</p>
-                        <button
-                            type='button'
-                            className='button button--small'
-                            onClick={closeModal}>
-                            確認
-                        </button>
-                    </div>
+                    <ModalContents
+                        clickable={closeModal}
+                        modalText="代金引換でお支払いする際、440円の手数料が追加されます。"
+                    />
                 </Modal>
                 <Checklist
                     defaultSelectedItemId={values.paymentProviderRadio}
@@ -271,9 +318,7 @@ export function mapToDonationProps({
     const checkout = getCheckout();
     const cart = getCart();
     const consignments = getConsignments() || [];
-    
-    console.log(checkoutService);
-    console.log(checkoutState);
+
 
     if (!checkout || !cart) {
         return null;
@@ -298,6 +343,4 @@ export function mapToDonationProps({
 }
 
 // export default connectFormik(memo(PaymentMethodList));
-
-
 export default connectFormik(withCheckout(mapToDonationProps)(PaymentMethodList));

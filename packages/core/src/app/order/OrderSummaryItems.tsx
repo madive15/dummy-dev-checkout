@@ -71,7 +71,6 @@ class OrderSummaryItems extends React.Component<OrderSummaryItemsProps, OrderSum
                         ...items.physicalItems
                             .slice()
                             .sort((item) => item.variantId)
-                            // .filter(item => item.sku !== 'COD1')
                             // sku값중 cod 라는 문자열 포함시 모든 필터처리
                             .filter(item => !item.sku.includes('COD'))
                             .map(mapFromPhysical),

@@ -1,4 +1,4 @@
-import { Coupon, GiftCertificate, Tax , LineItemMap} from '@bigcommerce/checkout-sdk';
+import { Coupon, GiftCertificate, Tax, LineItemMap } from '@bigcommerce/checkout-sdk';
 import React, { FunctionComponent, memo } from 'react';
 import { TranslatedString } from '../locale';
 import OrderSummaryDiscount from './OrderSummaryDiscount';
@@ -8,9 +8,8 @@ import { findIndex } from 'lodash';
 
 
 
-
 export interface OrderSummarySubtotalsProps {
-    lineitems:LineItemMap;
+    lineitems: LineItemMap;
     coupons: Coupon[];
     giftCertificates?: GiftCertificate[];
     discountAmount?: number;
@@ -22,6 +21,11 @@ export interface OrderSummarySubtotalsProps {
     subtotalAmount: number;
     onRemovedGiftCertificate?(code: string): void;
     onRemovedCoupon?(code: string): void;
+}
+
+interface IDisplayCoupon {
+    coupon?: string;
+    displayName: string;
 }
 
 const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
@@ -38,20 +42,57 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
     onRemovedGiftCertificate,
     onRemovedCoupon,
 }) => {
-    
+
     const index = findIndex(lineitems!.physicalItems!, { sku: "COD1" });
     const index2 = findIndex(lineitems!.physicalItems!, { sku: "COD2" });
     const index3 = findIndex(lineitems!.physicalItems!, { sku: "COD3" });
     const index4 = findIndex(lineitems!.physicalItems!, { sku: "COD4" });
-    
-    // index는 sku값 COD1 을 갖고있는 index를 찾아줌. by loadsh.findIndex();
+
+    const displayCouponName = (coupon: IDisplayCoupon) => {
+        let displayName = coupon.displayName;
+
+        switch (true) {
+            case displayName.includes('off the order total'):
+                displayName = displayName.replace('off the order total', '割引');
+                break;
+            case displayName.includes('Free shipping'):
+                displayName = displayName.replace('Free shipping', '送料無料');
+                break;
+            case displayName.includes('off each item'):
+                displayName = displayName.replace('off each item', '各アイテム当');
+                break;
+            case displayName.includes('off the shipping total'):
+                displayName = displayName.replace('off the shipping total', '送料割引');
+                break;
+            default:
+                break;
+        }
+
+        return displayName;
+    }
+
+    const getListPrice = (index: number, index2: number, index3: number, index4: number, lineitems: any) => {
+        return index > -1 ? lineitems!.physicalItems[index]!.listPrice
+            : (index2 > -1 ?
+                lineitems.physicalItems[index2]!.listPrice
+                :
+                index3 > -1 ?
+                    lineitems.physicalItems[index3]!.listPrice
+                    :
+                    index4 > -1 ?
+                        lineitems.physicalItems[index4]!.listPrice
+                        : 0
+            );
+    };
+
+    const listPrice = getListPrice(index, index2, index3, index4, lineitems);
 
     return (
         <>
             <OrderSummaryPrice
                 amount={subtotalAmount}
                 className="cart-priceItem--subtotal"
-                label={ <TranslatedString id="cart.subtotal_text" /> }
+                label={<TranslatedString id="cart.subtotal_text" />}
                 testId="cart-subtotal"
             />
 
@@ -61,19 +102,7 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
              */}
 
             <OrderSummaryTest
-                amount={ 
-                    index > -1 ? lineitems!.physicalItems[index]!.listPrice
-                    : (index2 > -1 ? 
-                        lineitems.physicalItems[index2]!.listPrice
-                        :
-                        index3 > -1 ? 
-                        lineitems.physicalItems[index3]!.listPrice
-                        :
-                        index4 > -1 ? 
-                        lineitems.physicalItems[index4]!.listPrice
-                        :0
-                    )
-                }
+                amount={listPrice}
                 label={<TranslatedString id="cart.cash_on_delivery" />}
                 testId="cart-cod"
             />
@@ -82,8 +111,9 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
                 <OrderSummaryDiscount
                     amount={coupon.discountedAmount}
                     code={coupon.code}
+                    couponType={coupon.couponType}
                     key={index}
-                    label={coupon.displayName}
+                    label={displayCouponName(coupon)}
                     onRemoved={onRemovedCoupon}
                     testId="cart-coupon"
                 />

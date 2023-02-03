@@ -34,7 +34,6 @@ import {
     PaymentMethodId,
     PaymentMethodProviderType,
 } from './paymentMethod';
-// import { Button, ButtonSize, ButtonVariant } from '../ui/button';
 import KoreaPayment from './KoreaPayment';
 import './cj-payment.scss';
 
@@ -202,12 +201,11 @@ class Payment extends Component<
             spec += ', width=' + width + ', height=' + height;
             spec += ', top=' + top + ', left=' + left;
 
-            const checkUrl = window.confirm('localhost:3000 번으로 하시겠습니까?');
+            const checkUrl = window.confirm('확인 -> localhost:3000\n취소 -> payment.madive.co.kr');
 
-
-            if(checkUrl){
-                PAY_URL = `https://localhost:3000/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}`;
-            }else{
+            if (checkUrl) {
+                PAY_URL = `http://localhost/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}`;
+            } else {
                 PAY_URL = `https://payment.madive.co.kr/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}`;
             }
 
@@ -243,7 +241,6 @@ class Payment extends Component<
                 imgName: "hpp"
             }
         ]
-
 
         return (
             <PaymentContext.Provider value={this.getContextValue()}>
@@ -287,7 +284,7 @@ class Payment extends Component<
                                     krPaymentMethods={krPaymentMethods}
                                     params={item.params}
                                     imgName={item.imgName}
-                                    key={idx}
+                                    key={idx + 1}
                                 />
                             )
                         })}
@@ -376,7 +373,6 @@ class Payment extends Component<
             return;
         }
 
-        console.log(this.state);
 
         this.setState({
             shouldHidePaymentSubmitButton: {

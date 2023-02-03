@@ -12,7 +12,7 @@ const LoadingNotification: FunctionComponent<LoadingNotificationProps> = ({ isLo
     }
 
     return (
-        <div className="loadingNotification">
+        <div className="loadingNotification checkoutDim">
             <div className="loadingNotification-label optimizedCheckout-loadingToaster">
                 <div className="spinner" />
 
