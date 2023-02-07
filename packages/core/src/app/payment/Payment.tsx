@@ -189,28 +189,6 @@ class Payment extends Component<
         const uniqueSelectedMethodId =
             selectedMethod && getUniquePaymentMethodId(selectedMethod.id, selectedMethod.gateway);
 
-
-        // CJ payment window popup open
-        const krPaymentMethods = (payName: string) => {
-            let PAY_URL;
-            let width = 600;
-            let height = 700;
-            let top = (window.innerHeight - height) / 2 + screenY;
-            let left = (window.innerWidth - width) / 2 + screenX;
-            let spec = 'status=no, menubar=no, toolbar=no, resizable=no';
-            spec += ', width=' + width + ', height=' + height;
-            spec += ', top=' + top + ', left=' + left;
-
-            const checkUrl = window.confirm('확인 -> localhost:3000\n취소 -> payment.madive.co.kr');
-
-            if (checkUrl) {
-                PAY_URL = `http://localhost/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}`;
-            } else {
-                PAY_URL = `https://payment.madive.co.kr/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}`;
-            }
-
-            window.open(PAY_URL, 'popup', spec);
-        }
         const krPaymentMethodsString: KoreaPaymentMethodsProps[] = [
             {
                 params: "Creditcard",
@@ -241,6 +219,29 @@ class Payment extends Component<
                 imgName: "hpp"
             }
         ]
+
+        // CJ payment window popup open
+        const krPaymentMethods = (payName: string) => {
+            let PAY_URL;
+            let width = 600;
+            let height = 700;
+            let top = (window.innerHeight - height) / 2 + screenY;
+            let left = (window.innerWidth - width) / 2 + screenX;
+            let spec = 'status=no, menubar=no, toolbar=no, resizable=no';
+            spec += ', width=' + width + ', height=' + height;
+            spec += ', top=' + top + ', left=' + left;
+
+            const checkUrl = window.confirm('확인 -> localhost:3000\n취소 -> payment.madive.co.kr');
+
+            if (checkUrl) {
+                PAY_URL = `http://localhost/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}&storeHash=eg2uuz5qbq`;
+            } else {
+                PAY_URL = `https://payment.madive.co.kr/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}&storeHash=eg2uuz5qbq`;
+            }
+
+            window.open(PAY_URL, 'popup', spec);
+        }
+
 
         return (
             <PaymentContext.Provider value={this.getContextValue()}>

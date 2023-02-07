@@ -295,7 +295,7 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
         const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
 
        
-        console.log(steps);
+        console.log(this.props)
 
         if (isCartEmpty) {
             return <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />;

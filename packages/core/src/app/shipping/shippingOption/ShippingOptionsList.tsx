@@ -44,7 +44,6 @@ export interface ShippingOptionListProps {
     isLoading: boolean;
     selectedShippingOptionId?: string;
     shippingOptions?: ShippingOption[];
-
     onSelectedOption(consignmentId: string, shippingOptionId: string): void;
 }
 
@@ -143,7 +142,6 @@ export function mapToDonationProps({
             getCart,
             getCheckout,
             getConsignments,
-            //getShippingOptions,
         }
     } = checkoutState;
 
@@ -153,7 +151,7 @@ export function mapToDonationProps({
 
     if (!checkout || !cart) {
         return null;
-    }
+    }                                           
 
     return {
         cart,

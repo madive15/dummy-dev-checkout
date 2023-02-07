@@ -49,6 +49,7 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
     const index4 = findIndex(lineitems!.physicalItems!, { sku: "COD4" });
 
     const displayCouponName = (coupon: IDisplayCoupon) => {
+
         let displayName = coupon.displayName;
 
         switch (true) {
@@ -62,7 +63,7 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
                 displayName = displayName.replace('off each item', '各アイテム当');
                 break;
             case displayName.includes('off the shipping total'):
-                displayName = displayName.replace('off the shipping total', '送料割引');
+                displayName = displayName.replace('off the shipping total', '가나다라');
                 break;
             default:
                 break;
@@ -71,7 +72,7 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
         return displayName;
     }
 
-    const getListPrice = (index: number, index2: number, index3: number, index4: number, lineitems: any) => {
+    const getListPrice = (index: number, index2: number, index3: number, index4: number, lineitems: LineItemMap) => {
         return index > -1 ? lineitems!.physicalItems[index]!.listPrice
             : (index2 > -1 ?
                 lineitems.physicalItems[index2]!.listPrice

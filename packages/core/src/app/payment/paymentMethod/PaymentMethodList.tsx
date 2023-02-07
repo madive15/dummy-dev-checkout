@@ -12,8 +12,6 @@ import PaymentMethodV2 from './PaymentMethodV2';
 import { Modal } from '../../ui/modal';
 import ModalContents from '../../ui/modal/ModalContents';
 
-
-
 export interface PaymentMethodListProps {
     isEmbedded?: boolean;
     isInitializingPayment?: boolean;
@@ -104,7 +102,9 @@ const PaymentMethodList: FunctionComponent<
 
         // Control modal 
         const [modal, setModal] = useState<boolean>(false);
-        const closeModal = () => { setModal(false); }
+
+        const closeModal = () => { setModal(false); };
+
 
         // COD sku index
         const index = findIndex(cart.lineItems.physicalItems, { sku: "COD1" });
@@ -131,7 +131,7 @@ const PaymentMethodList: FunctionComponent<
                     console.error(error);
                 }
 
-            } else if (values.paymentProviderRadio !== 'cod') {
+            } else if (!isCODSelected) {
                 const itemId = cart.lineItems.physicalItems[productIndex].id!;
                 try {
                     const response = await fetch(`/api/storefront/carts/${cart.id}/items/${itemId}`, {
