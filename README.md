@@ -1,71 +1,47 @@
 # Checkout JS
+MAC OS (리눅스) 환경에서 가능
 
-맥OS 환경에서 가능.
+# Process Checkout
+클래스 컴포넌트 , 함수형 컴포넌트 이중사용중
+상태관리는 context api 로 사용중이라 별개의 컴포넌트에서 checkout context를 이용할시 아래 코드 처럼 import 해와서 사용 하려고 하는 컴포넌트에서 props 이용하면 됨.
+기존 컴포넌트가 memoziation 으로 감싸져있으면 아래와 같이 감싸줘야함. (컴포넌트 성능개선)
+Typescript로 되어있어서 항상 최상단에 interface 로 type 선언을 해줘야함.
 
-Checkout JS is a browser-based application providing a seamless UI for BigCommerce shoppers to complete their checkout. It is also known as [Optimized One-Page Checkout](https://support.bigcommerce.com/s/article/Optimized-Single-Page-Checkout), which is currently the recommended checkout option for all BigCommerce stores.
+----------
 
-## Requirements
+클래스형 컴포넌트에선 react hook 사용 불가 , useState , useEffect 등 리액트 훅들을 클래스형 컴포넌트 맞게끔 써야함. ex) setState: "value " , componentDidMount() , componentWillMount()
 
-In order to build from the source code, you must have the following set up in your development environment.
+```js
+export function mapToDonationProps({
+    checkoutService,
+    checkoutState,
+}: CheckoutContextProps): WithCheckoutShippingProps | null {
+    const {
+        data: {
+            getCart,
+            getCheckout,
+            getConsignments,
+        }
+    } = checkoutState;
 
-* Node >= v14.
-* NPM >= v6.
-* Unix-based operating system.
+    const checkout = getCheckout();
+    const cart = getCart();
+    const consignments = getConsignments() || [];
 
-One of the simplest ways to install Node is using [NVM](https://github.com/nvm-sh/nvm#installation-and-update). You can follow their instructions to set up your environment if it is not already set up.
+    if (!checkout || !cart) {
+        return null;
+    }                                           
 
-## Development
+    return {
+        cart,
+        consignments,
+        loadCheckout: checkoutService.loadCheckout
+    };
+}
 
-Once you have cloned the repository and set up your environment, you can start developing with it.
+export default memo(withCheckout(mapToDonationProps)(ShippingOptionsList));
 
-First, you have to pull in the dependencies required for the application.
-
-```sh
-npm ci (Dependency package 설치)
 ```
-
-After that, you can make changes to the source code and run the following command to build it.
-
-```sh
-npm run build
-```
-
-If you are developing the application locally and want to build the source code in watch mode, you can run the following command:
-
-```sh
-npm run dev
-```
-
-If you want to create a prerelease (i.e.: `alpha`) for testing in the integration environment, you can run the following command:
-
-```sh
-npm run release:alpha
-```
-
-After that, you need to push the prerelease tag to your fork so it can be referenced remotely.
-
-## Custom Checkout installation
-
-Follow [this guide](https://developer.bigcommerce.com/stencil-docs/customizing-checkout/installing-custom-checkouts) for instructions on how to fork and install this app as a Custom Checkout in your store.
-
-If you want to test your checkout implementation, you can run:
-```sh
-npm run dev:server // 커맨드 안먹힘.
-npm run dev & npm run dev:server //이걸로 해야함.
-```
-
-And enter the local URL for `auto-loader-dev.js` in Checkout Settings, e.g `http://127.0.0.1:8080/auto-loader-dev.js`
-
-## Release
-
-Everytime a PR is merged to the master branch, CircleCI will trigger a build automatically. However, it won't create a new Git release until it is approved by a person with write access to the repository. If you have write access, you can approve a release job by going to [CircleCI](https://circleci.com/gh/bigcommerce/workflows/checkout-js/tree/master) and look for the job you wish to approve. You can also navigate directly to the release job by clicking on the yellow dot next to the merged commit.
-
-
-## Contribution
-
-We currently do not accept Pull Requests from external parties. However, if you are an external party and want to report a bug or provide your feedback, you are more than welcome to raise a GitHub Issue. We will attend to these issues as quickly as we can.
-
-More information can be found in the [contribution guide](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md) for this project.
-
-
-Copyright (C) 2019-Present BigCommerce Inc. All rights reserved.
+# How to build ?
+1.npm run build (build error 시 import만 되고 실제로 코드에 사용하지 않으면 build 오류 발생 , 안쓰는 import 는 지워 줄것)
+2.빌드가 완료되면 , webdav 실행 후 content 안에 dist 폴더 업로드 (dist 폴더안에 auto-loader.js 로 돌아감)
