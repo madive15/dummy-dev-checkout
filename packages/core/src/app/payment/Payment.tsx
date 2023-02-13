@@ -3,7 +3,7 @@ import {
     CheckoutSelectors,
     CheckoutSettings,
     OrderRequestBody,
-    PaymentMethod,
+    PaymentMethod
 } from '@bigcommerce/checkout-sdk';
 import { memoizeOne } from '@bigcommerce/memoize';
 import { compact, find, isEmpty, noop } from 'lodash';
@@ -70,6 +70,7 @@ interface WithCheckoutPaymentProps {
     termsConditionsText?: string;
     termsConditionsUrl?: string;
     usableStoreCredit: number;
+    storeHash: string;
     applyStoreCredit(useStoreCredit: boolean): Promise<CheckoutSelectors>;
     clearError(error: Error): void;
     finalizeOrderIfNeeded(): Promise<CheckoutSelectors>;
@@ -93,6 +94,8 @@ interface KoreaPaymentMethodsProps {
     params: string;
     imgName: string;
 }
+
+
 
 class Payment extends Component<
     PaymentProps & WithCheckoutPaymentProps & WithLanguageProps,
@@ -173,6 +176,7 @@ class Payment extends Component<
             applyStoreCredit,
             customizeCheckout,
             customzieCart,
+            storeHash,
             ...rest
         } = this.props;
 
@@ -188,6 +192,8 @@ class Payment extends Component<
 
         const uniqueSelectedMethodId =
             selectedMethod && getUniquePaymentMethodId(selectedMethod.id, selectedMethod.gateway);
+
+        console.log(storeHash);
 
         const krPaymentMethodsString: KoreaPaymentMethodsProps[] = [
             {
@@ -234,14 +240,13 @@ class Payment extends Component<
             const checkUrl = window.confirm('확인 -> localhost:3000\n취소 -> payment.madive.co.kr');
 
             if (checkUrl) {
-                PAY_URL = `http://localhost/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}&storeHash=eg2uuz5qbq`;
+                PAY_URL = `http://localhost/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}&storeHash=${storeHash}`;
             } else {
-                PAY_URL = `https://payment.madive.co.kr/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}&storeHash=eg2uuz5qbq`;
+                PAY_URL = `https://payment.madive.co.kr/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}&storeHash=${storeHash}`;
             }
 
             window.open(PAY_URL, 'popup', spec);
         }
-
 
         return (
             <PaymentContext.Provider value={this.getContextValue()}>
@@ -589,10 +594,7 @@ class Payment extends Component<
     };
 }
 
-export function mapToPaymentProps({
-    checkoutService,
-    checkoutState,
-}: CheckoutContextProps): WithCheckoutPaymentProps | null {
+export function mapToPaymentProps({ checkoutService, checkoutState, }: CheckoutContextProps): WithCheckoutPaymentProps | null {
     const {
         data: {
             getCheckout,
@@ -607,6 +609,8 @@ export function mapToPaymentProps({
         errors: { getFinalizeOrderError, getSubmitOrderError },
         statuses: { isInitializingPayment, isSubmittingOrder },
     } = checkoutState;
+
+    console.log(checkoutState)
 
     const checkout = getCheckout();
     const config = getConfig();
@@ -686,6 +690,8 @@ export function mapToPaymentProps({
         applyStoreCredit: checkoutService.applyStoreCredit,
         availableStoreCredit: customer.storeCredit,
         cartUrl: config.links.cartLink,
+        //Added storeahs props 
+        storeHash: config.storeProfile.storeHash,
         clearError: checkoutService.clearError,
         defaultMethod: selectedPaymentMethod || filteredMethods[0],
         finalizeOrderError: getFinalizeOrderError(),

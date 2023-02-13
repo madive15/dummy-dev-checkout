@@ -9,8 +9,7 @@ import { findIndex } from 'lodash';
 import getUniquePaymentMethodId, { parseUniquePaymentMethodId } from './getUniquePaymentMethodId';
 import PaymentMethodTitle from './PaymentMethodTitle';
 import PaymentMethodV2 from './PaymentMethodV2';
-import { Modal } from '../../ui/modal';
-import ModalContents from '../../ui/modal/ModalContents';
+import ModalManagement from '../../ui/modal/ModalManagement';
 
 export interface PaymentMethodListProps {
     isEmbedded?: boolean;
@@ -177,12 +176,13 @@ const PaymentMethodList: FunctionComponent<
 
         return (
             <>
-                <Modal isOpen={modal}>
+                {/* <Modal isOpen={modal}>
                     <ModalContents
                         clickable={closeModal}
                         modalText="代金引換でお支払いする際、440円の手数料が追加されます。"
                     />
-                </Modal>
+                </Modal> */}
+                <ModalManagement modal={modal} closeModal={closeModal}/>
                 <Checklist
                     defaultSelectedItemId={values.paymentProviderRadio}
                     isDisabled={isInitializingPayment}
