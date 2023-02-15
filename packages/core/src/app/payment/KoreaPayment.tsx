@@ -12,19 +12,21 @@ const KoreaPayment = ({
   imgName,
   krPaymentMethods
 }: KoreaPaymentProps) => {
-  
 
   return (
-    <Button
-      className={`button--slab korea-btn ${imgName}`}
-      size={ButtonSize.Large}
-      variant={ButtonVariant.Primary}
-      onClick={() => { krPaymentMethods(params) }}
-    >
-      <TranslatedString
-        id={`payment.korea_payment_${params}`}
-      />
-    </Button>
+    <>
+      <Button
+        className={`button--slab korea-btn ${imgName}`}
+        size={ButtonSize.Large}
+        variant={ButtonVariant.Primary}
+        onClick={() => { krPaymentMethods(params) }}
+      >
+        <TranslatedString
+          id={`payment.korea_payment_${params}`}
+        />
+      </Button>
+    </>
+    
   );
 };
 

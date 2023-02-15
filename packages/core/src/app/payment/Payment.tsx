@@ -36,6 +36,7 @@ import {
 } from './paymentMethod';
 import KoreaPayment from './KoreaPayment';
 import './cj-payment.scss';
+import KoreaVirtualAcocout from './KoreaVirtualAccount';
 
 
 export interface PaymentProps {
@@ -88,11 +89,26 @@ interface PaymentState {
     shouldHidePaymentSubmitButton: { [key: string]: boolean };
     submitFunctions: { [key: string]: ((values: PaymentFormValues) => void) | null };
     validationSchemas: { [key: string]: ObjectSchema<Partial<PaymentFormValues>> | null };
+    showVirtualMethod: boolean;
 }
 
 interface KoreaPaymentMethodsProps {
     params: string;
     imgName: string;
+    id:number;
+}
+export interface IVirtualAccout {
+    id: number;
+    value: string;
+    bank: string;
+}
+
+export interface ICashRecive {
+    id: number;
+    method: "미발행" | "소득공제" | "지출증빙";
+    value: string;
+    tagId: string;
+    checked: boolean;
 }
 
 
@@ -108,6 +124,7 @@ class Payment extends Component<
         shouldHidePaymentSubmitButton: {},
         validationSchemas: {},
         submitFunctions: {},
+        showVirtualMethod: false,
     };
 
     private getContextValue = memoizeOne(() => {
@@ -187,47 +204,139 @@ class Payment extends Component<
             shouldDisableSubmit,
             validationSchemas,
             shouldHidePaymentSubmitButton,
+            showVirtualMethod,
         } = this.state;
 
 
         const uniqueSelectedMethodId =
             selectedMethod && getUniquePaymentMethodId(selectedMethod.id, selectedMethod.gateway);
 
-        console.log(storeHash);
 
+        // CJ payment mapping(ID, parameter, imgsrcName)
         const krPaymentMethodsString: KoreaPaymentMethodsProps[] = [
             {
+                id: 0,
                 params: "Creditcard",
                 imgName: "credit"
             },
             {
+                id: 1,
                 params: "PCO",
                 imgName: "pco"
             },
             {
+                id: 2,
                 params: "Account",
                 imgName: "account"
             },
             {
+                id: 3,
                 params: "VirtualAccount",
                 imgName: "virtualAccount"
             },
             {
+                id: 4,
                 params: "NVP",
                 imgName: "nvp"
             },
             {
+                id: 5,
                 params: "KKO",
                 imgName: "kakao"
             },
             {
+                id: 6,
                 params: "HPP",
                 imgName: "hpp"
             }
         ]
 
+
+        const virtualAccoutValues: IVirtualAccout[] = [
+            {
+                id: 0,
+                value: "003",
+                bank: "기업"
+            },
+            {
+                id: 1,
+                value: "004",
+                bank: "국민"
+            },
+            {
+                id: 2,
+                value: "007",
+                bank: "수협"
+            },
+            {
+                id: 3,
+                value: "011",
+                bank: "농협"
+            },
+            {
+                id: 4,
+                value: "020",
+                bank: "우리"
+            },
+            {
+                id: 5,
+                value: "031",
+                bank: "대구"
+            },
+            {
+                id: 6,
+                value: "032",
+                bank: "부산"
+            },
+            {
+                id: 7,
+                value: "039",
+                bank: "경남"
+            },
+            {
+                id: 8,
+                value: "071",
+                bank: "우체국"
+            },
+            {
+                id: 9,
+                value: "081",
+                bank: "하나"
+            },
+            {
+                id: 10,
+                value: "088",
+                bank: "신한"
+            },
+        ]
+
+        const methodsCashRecive: ICashRecive[] = [
+            {
+                id: 0,
+                method: "미발행",
+                value: "00",
+                tagId: "CashReceiptUse1",
+                checked: true
+            },
+            {
+                id: 1,
+                method: "소득공제",
+                value: "01",
+                tagId: "CashReceiptUse2",
+                checked: false
+            },
+            {
+                id: 2,
+                method: "지출증빙",
+                value: "02",
+                tagId: "CashReceiptUse3",
+                checked: false
+            }
+        ]
+
         // CJ payment window popup open
         const krPaymentMethods = (payName: string) => {
+            const VIRTUAL_ACCOUNT_PARAMS = payName === 'VirtualAccount';
             let PAY_URL;
             let width = 600;
             let height = 700;
@@ -237,16 +346,29 @@ class Payment extends Component<
             spec += ', width=' + width + ', height=' + height;
             spec += ', top=' + top + ', left=' + left;
 
-            const checkUrl = window.confirm('확인 -> localhost:3000\n취소 -> payment.madive.co.kr');
-
-            if (checkUrl) {
+            // payName이 가상계좌가 아닐때 logic , confirm창 
+            if (!VIRTUAL_ACCOUNT_PARAMS && window.confirm('확인 -> localhost:3000\n취소 -> payment.madive.co.kr')) {
                 PAY_URL = `http://localhost/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}&storeHash=${storeHash}`;
             } else {
                 PAY_URL = `https://payment.madive.co.kr/openPayment?id=${customizeCheckout}&cid=${customzieCart.customerId}&payCd=${payName}&storeHash=${storeHash}`;
             }
-
-            window.open(PAY_URL, 'popup', spec);
+            // payName이 가상계좌 일때 logic
+            if (VIRTUAL_ACCOUNT_PARAMS) {
+                this.setState({
+                    showVirtualMethod: true
+                });
+                setTimeout(() => {
+                    window.scrollTo(0, document.body.scrollHeight);
+                }, 300);
+                // payName 파라미터가 아닐떄 virtual state logic
+            } else if (!VIRTUAL_ACCOUNT_PARAMS) {
+                this.setState({
+                    showVirtualMethod: false
+                })
+                window.open(PAY_URL, 'popup', spec);
+            }
         }
+
 
         return (
             <PaymentContext.Provider value={this.getContextValue()}>
@@ -284,17 +406,27 @@ class Payment extends Component<
                     )}
                     {/* KoreaCJ Payment Mapping */}
                     <div className="payment-wrap checkout-form">
-                        {krPaymentMethodsString.map((item: KoreaPaymentMethodsProps, idx) => {
+                        {krPaymentMethodsString.map((item: KoreaPaymentMethodsProps) => {
                             return (
                                 <KoreaPayment
                                     krPaymentMethods={krPaymentMethods}
                                     params={item.params}
                                     imgName={item.imgName}
-                                    key={idx + 1}
+                                    key={item.id}
                                 />
                             )
                         })}
                     </div>
+                    {showVirtualMethod &&
+                        <KoreaVirtualAcocout
+                            virtualAccoutValues={virtualAccoutValues}
+                            methodsCashRecive={methodsCashRecive}
+                            krPaymentMethods={krPaymentMethods}
+                            customizeCheckout={customizeCheckout}
+                            customerId={customzieCart.customerId}
+                            storeHash={storeHash}
+                        />
+                    }
                 </LoadingOverlay>
 
                 {this.renderOrderErrorModal()}
