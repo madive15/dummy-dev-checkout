@@ -176,13 +176,7 @@ const PaymentMethodList: FunctionComponent<
 
         return (
             <>
-                {/* <Modal isOpen={modal}>
-                    <ModalContents
-                        clickable={closeModal}
-                        modalText="代金引換でお支払いする際、440円の手数料が追加されます。"
-                    />
-                </Modal> */}
-                <ModalManagement modal={modal} closeModal={closeModal}/>
+                <ModalManagement modal={modal} closeModal={closeModal} />
                 <Checklist
                     defaultSelectedItemId={values.paymentProviderRadio}
                     isDisabled={isInitializingPayment}

@@ -59,7 +59,15 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
     CashReceiptInfo:''
   })
 
+//  validation state
+  const [validation , setValidation] = useState({
+    AccountOwner:false,
+    CashReceiptInfo:false
+  })
+
+  // Destructuring Assignmen
   const {AccountOwner,CashReceiptInfo} = textInputs;
+  const {AccountOwner:AccountOwnerValidation ,CashReceiptInfo:CashReceiptInfoValidation} = validation;
 
   const onChangeText = (e:React.ChangeEvent<HTMLInputElement>) => {
     const {target:{name,value}} = e;
@@ -68,18 +76,18 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
       [name]:value
     });
     const nameRegex = /^[가-힣]{2,4}$/;
-    !nameRegex.test(value) && name === 'AccountOwner' ? setValidation(true) : setValidation(false);
-
     const numberRegex = /^[0-9]{2,3}[0-9]{3,4}[0-9]{4}$/;
-    !numberRegex.test(value) && name === 'CashReceiptInfo' ? setValidation2(true) : setValidation2(false);
+
+    setValidation({
+      ...validation,
+      AccountOwner: !nameRegex.test(value) && name ==='AccountOwner',
+      CashReceiptInfo: !numberRegex.test(value) && name ==='CashReceiptInfo'
+    })
+
   }
 
   // Radio display state
   const [radioValue, setRadioValue] = useState('00');
-
-  //  validation state
-  const [validation, setValidation] = useState(false);
-  const [validation2, setValidation2] = useState(false);
 
   const radioOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = radio.map((item: ICashRecive) => {
@@ -111,18 +119,21 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
     spec += ', width=' + width + ', height=' + height;
     spec += ', top=' + top + ', left=' + left;
 
+    
     const confirmAlert = window.confirm('확인 -> localhost:\n취소 -> payment.madive.co.kr');
 
     const {payName,bankCd,accountOwner,cashReceiptUse,cashReceiptInfo} = params;
 
+    const arr = ['http://localhost','https://payment.madive.co.kr'];
+
     if (confirmAlert) {
-      window.open(`http://localhost/openPayment?id=${customizeCheckoutProps}&cid=${customerIdProps}&payCd=${payName}&storeHash=${storeHashProps}&bankCd=${bankCd}&accountOwner=${accountOwner}&cashReceiptUse=${cashReceiptUse}&cashReceiptInfo=${cashReceiptInfo}`, 'popup', spec);
+      window.open(`${arr[0]}/openPayment?id=${customizeCheckoutProps}&cid=${customerIdProps}&payCd=${payName}&storeHash=${storeHashProps}&bankCd=${bankCd}&accountOwner=${accountOwner}&cashReceiptUse=${cashReceiptUse}&cashReceiptInfo=${cashReceiptInfo}`, 'popup', spec);
     } else {
-      window.open(`https://payment.madive.co.kr/openPayment?id=${customizeCheckoutProps}&cid=${customerIdProps}&payCd=${payName}&storeHash=${storeHashProps}&bankCd=${bankCd}&accountOwner=${accountOwner}&cashReceiptUse=${cashReceiptUse}&cashReceiptInfo=${cashReceiptInfo}`, 'popup', spec);
+      window.open(`${[arr[1]]}]/openPayment?id=${customizeCheckoutProps}&cid=${customerIdProps}&payCd=${payName}&storeHash=${storeHashProps}&bankCd=${bankCd}&accountOwner=${accountOwner}&cashReceiptUse=${cashReceiptUse}&cashReceiptInfo=${cashReceiptInfo}`, 'popup', spec);
     }
   }
 
-  // Remove radio value when browser reloaded.
+  // Remove radio value(localstorage) when browser reloaded.
   useEffect(() => {
     window.onbeforeunload = () => {
       localStorage.removeItem('selectdRadio');
@@ -167,7 +178,7 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
             onChange={onChangeText}
             required
           />
-          {validation && <CJPaymentValidation validation='* 이름을 제대로 입력해주세요.' />}
+          {AccountOwnerValidation && <CJPaymentValidation validation='* 이름을 제대로 입력해주세요.' />}
         </div>
 
         {/* Customer PhoneNubmer Text Inputs */}
@@ -183,7 +194,7 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
             onChange={onChangeText}
             required
           />
-          {validation2 && <CJPaymentValidation validation='* "-"를 제외하고 번호만 입력해주세요.' />}
+          {CashReceiptInfoValidation && <CJPaymentValidation validation='* "-"를 제외하고 번호만 입력해주세요.' />}
         </div>
       </div>
 
