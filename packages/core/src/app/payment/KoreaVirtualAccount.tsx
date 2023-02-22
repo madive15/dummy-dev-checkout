@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CJPaymentValidation from './CJPaymentValidation';
-import { ICashRecive, IVirtualAccout } from './Payment';
+import { CashReceipts, IVirtualAccout } from './Payment';
 import './cj-payment.scss';
 
 interface VirtualProps {
@@ -17,12 +17,22 @@ interface PaymentParmsProps {
   bankCd: string,
   accountOwner: string,
   cashReceiptUse: string,
-  cashReceiptInfo: string,
+  cashReceiptInfo?: string,
 }
 
-const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId, storeHash }: VirtualProps) => {
+interface TextStateTypes{
+  AccountOwner:string;
+  CashReceiptInfo:string;
+}
 
-  // This variables are for prevent to confuse with function(virtualOpenLink) parameter.
+interface RadioStateTypes{
+  AccountOwner:boolean;
+  CashReceiptInfo:boolean;
+}
+
+const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId, storeHash , methodsCashRecive}: VirtualProps) => {
+
+  // This variables are for prevent to confuse with "function(virtualOpenLink)" parameter.
   const customizeCheckoutProps = customizeCheckout;
   const customerIdProps = customerId;
   const storeHashProps = storeHash;
@@ -31,70 +41,53 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
   const [selected, setSelected] = useState('003');
 
   // Radio input state
-  const [radio, setRadio] = useState<ICashRecive[]>([{
-    id: 0,
-    method: "미발행",
-    value: "00",
-    tagId: "CashReceiptUse1",
-    checked: true
-  },
-  {
-    id: 1,
-    method: "소득공제",
-    value: "01",
-    tagId: "CashReceiptUse2",
-    checked: false
-  },
-  {
-    id: 2,
-    method: "지출증빙",
-    value: "02",
-    tagId: "CashReceiptUse3",
-    checked: false
-  }]);
+  const [radio, setRadio] = useState<CashReceipts[]>(methodsCashRecive);
+  console.log(radio);
 
   // Text input states
-  const [textInputs, setTextInputs ] = useState({
-    AccountOwner:'',
-    CashReceiptInfo:''
+  const [textInputs, setTextInputs] = useState<TextStateTypes>({
+    AccountOwner: '',
+    CashReceiptInfo: ''
   })
 
-//  validation state
-  const [validation , setValidation] = useState({
-    AccountOwner:false,
-    CashReceiptInfo:false
+  //  validation state
+  const [validation, setValidation] = useState<RadioStateTypes>({
+    AccountOwner: false,
+    CashReceiptInfo: false
   })
 
-  // Destructuring Assignmen
-  const {AccountOwner,CashReceiptInfo} = textInputs;
-  const {AccountOwner:AccountOwnerValidation ,CashReceiptInfo:CashReceiptInfoValidation} = validation;
+  // Destructuring Assignment
+  // Text inputs
+  const { AccountOwner, CashReceiptInfo } = textInputs;
+  // Destructuring Assignment Valiation states
+  const { AccountOwner: AccountOwnerValidation, CashReceiptInfo: CashReceiptInfoValidation } = validation;
 
-  const onChangeText = (e:React.ChangeEvent<HTMLInputElement>) => {
-    const {target:{name,value}} = e;
+  const onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { target: { name, value } } = e;
     setTextInputs({
       ...textInputs,
-      [name]:value
+      [name]: value
     });
     const nameRegex = /^[가-힣]{2,4}$/;
     const numberRegex = /^[0-9]{2,3}[0-9]{3,4}[0-9]{4}$/;
 
     setValidation({
       ...validation,
-      AccountOwner: !nameRegex.test(value) && name ==='AccountOwner',
-      CashReceiptInfo: !numberRegex.test(value) && name ==='CashReceiptInfo'
+      AccountOwner: !nameRegex.test(value) && name === 'AccountOwner',
+      CashReceiptInfo: !numberRegex.test(value) && name === 'CashReceiptInfo'
     })
-
   }
 
   // Radio display state
   const [radioValue, setRadioValue] = useState('00');
 
   const radioOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = radio.map((item: ICashRecive) => {
-      if (item.value === e.target.value) {
+    const { target: { value } } = e;
+    const newValue = radio.map((item: CashReceipts) => {
+      if (item.value === value) {
         item.checked = true;
-        setRadioValue(e.target.value);
-        localStorage.setItem('selectdRadio', e.target.value);
+        setRadioValue(value);
+        localStorage.setItem('selectdRadio', value);
       } else {
         item.checked = false;
       }
@@ -110,7 +103,7 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
     }
   }, []);
 
-  const virtualOpenLink = (params:PaymentParmsProps) => {
+  const virtualOpenLink = (params: PaymentParmsProps) => {
     let width = 600;
     let height = 700;
     let top = (window.innerHeight - height) / 2 + screenY;
@@ -119,17 +112,19 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
     spec += ', width=' + width + ', height=' + height;
     spec += ', top=' + top + ', left=' + left;
 
-    
+
     const confirmAlert = window.confirm('확인 -> localhost:\n취소 -> payment.madive.co.kr');
+    const { payName, bankCd, accountOwner, cashReceiptUse, cashReceiptInfo } = params;
 
-    const {payName,bankCd,accountOwner,cashReceiptUse,cashReceiptInfo} = params;
 
-    const arr = ['http://localhost','https://payment.madive.co.kr'];
+    const LOCAL_HOST = "http://localhost";
+    const PAYMENT_DOMAIN = 'https://payment.madive.co.kr';
+    const PARAMETER_URL = `openPayment?id=${customizeCheckoutProps}&cid=${customerIdProps}&payCd=${payName}&storeHash=${storeHashProps}&bankCd=${bankCd}&accountOwner=${accountOwner}&cashReceiptUse=${cashReceiptUse}&cashReceiptInfo=${cashReceiptInfo}`;
 
     if (confirmAlert) {
-      window.open(`${arr[0]}/openPayment?id=${customizeCheckoutProps}&cid=${customerIdProps}&payCd=${payName}&storeHash=${storeHashProps}&bankCd=${bankCd}&accountOwner=${accountOwner}&cashReceiptUse=${cashReceiptUse}&cashReceiptInfo=${cashReceiptInfo}`, 'popup', spec);
+      window.open(`${LOCAL_HOST}/${PARAMETER_URL}`, 'popup', spec);
     } else {
-      window.open(`${[arr[1]]}]/openPayment?id=${customizeCheckoutProps}&cid=${customerIdProps}&payCd=${payName}&storeHash=${storeHashProps}&bankCd=${bankCd}&accountOwner=${accountOwner}&cashReceiptUse=${cashReceiptUse}&cashReceiptInfo=${cashReceiptInfo}`, 'popup', spec);
+      window.open(`${PAYMENT_DOMAIN}/${PARAMETER_URL}`, 'popup', spec);
     }
   }
 
@@ -147,8 +142,7 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
       bankCd: selected,
       accountOwner: AccountOwner,
       cashReceiptUse: radioValue,
-      cashReceiptInfo: CashReceiptInfo
-      ,
+      cashReceiptInfo: CashReceiptInfo,
     };
     virtualOpenLink(params);
   }
@@ -156,9 +150,8 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
   return (
     <form onSubmit={handleSubmit} className='virtual-method-form checkout-form'>
       <label className="col-sm-2 control-label" htmlFor=''>카드코드(CardCode)</label>
-
       {/* Select options */}
-      <select id="selBankCode" className="form-control" name="BankCd" value={selected} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setSelected(e.target.value) }}>
+      <select id="selBankCode" className="form-control form-select" name="BankCd" value={selected} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setSelected(e.target.value) }}>
         {virtualAccoutValues.map((item: IVirtualAccout) => {
           return <option key={item.id} value={item.value}>{item.bank}</option>
         })}
@@ -203,7 +196,7 @@ const KoreaVirtualAccout = ({ virtualAccoutValues, customizeCheckout, customerId
           {/* Radio Inputs */}
           <label className="col-sm-2 control-label" htmlFor="CashReceiptUse">현금영수증 발행 구분</label>
           <div className="col-sm-10">
-            {radio.map((item: ICashRecive) => {
+            {radio.map((item: CashReceipts) => {
               return (
                 <React.Fragment key={item.id}>
                   <input

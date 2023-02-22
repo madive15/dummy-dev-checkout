@@ -95,7 +95,7 @@ interface PaymentState {
 interface KoreaPaymentMethodsProps {
     params: string;
     imgName: string;
-    id:number;
+    id: number;
 }
 export interface IVirtualAccout {
     id: number;
@@ -103,7 +103,7 @@ export interface IVirtualAccout {
     bank: string;
 }
 
-export interface ICashRecive {
+export interface CashReceipts {
     id: number;
     method: "미발행" | "소득공제" | "지출증빙";
     value: string;
@@ -231,8 +231,8 @@ class Payment extends Component<
             },
             {
                 id: 3,
-                params: "VirtualAccount",
-                imgName: "virtualAccount"
+                params: "HPP",
+                imgName: "hpp"
             },
             {
                 id: 4,
@@ -246,12 +246,12 @@ class Payment extends Component<
             },
             {
                 id: 6,
-                params: "HPP",
-                imgName: "hpp"
+                params: "VirtualAccount",
+                imgName: "virtualAccount"
             }
         ]
 
-
+        // Bank info mapping
         const virtualAccoutValues: IVirtualAccout[] = [
             {
                 id: 0,
@@ -307,10 +307,10 @@ class Payment extends Component<
                 id: 10,
                 value: "088",
                 bank: "신한"
-            },
+            }
         ]
-
-        const methodsCashRecive: ICashRecive[] = [
+        // 현금영수증 mapping CashReceipts
+        const methodsCashRecive: CashReceipts[] = [
             {
                 id: 0,
                 method: "미발행",
