@@ -1,15 +1,16 @@
 # Checkout JS
 MAC OS (리눅스) 환경에서 가능
 
+# Command 
+* npm run dev & npm run dev:server
 # Process Checkout
-클래스 컴포넌트 , 함수형 컴포넌트 이중사용중
-상태관리는 context api 로 사용중이라 별개의 컴포넌트에서 checkout context를 이용할시 아래 코드 처럼 import 해와서 사용 하려고 하는 컴포넌트에서 props 이용하면 됨.
-기존 컴포넌트가 memoziation 으로 감싸져있으면 아래와 같이 감싸줘야함. (컴포넌트 성능개선)
-Typescript로 되어있어서 항상 최상단에 interface 로 type 선언을 해줘야함.
+ * 클래스 컴포넌트 , 함수형 컴포넌트 이중사용중
 
-----------
-
-클래스형 컴포넌트에선 react hook 사용 불가 , useState , useEffect 등 리액트 훅들을 클래스형 컴포넌트 맞게끔 써야함. ex) setState: "value " , componentDidMount() , componentWillMount()
+## Context API
+ * CheckoutProvider.tsx
+ * mapToCheckoutProps.ts
+ * CheckoutContext.tsx (type)
+ 
 
 ```js
 export function mapToDonationProps({

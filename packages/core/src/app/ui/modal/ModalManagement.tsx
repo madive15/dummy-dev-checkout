@@ -4,15 +4,16 @@ import ModalContents from './ModalContents';
 
 interface ModalManagementProps {
   modal:boolean;
+  text:string;
   closeModal():void;
 }
 
-const ModalManagement = ({modal,closeModal}:ModalManagementProps) => {
+const ModalManagement = ({modal,text,closeModal}:ModalManagementProps) => {
   return (
     <Modal isOpen={modal}>
       <ModalContents
         clickable={closeModal}
-        modalText="代金引換でお支払いする際、440円の手数料が追加されます。"
+        modalText={text}
       />
     </Modal>
   );

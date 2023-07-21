@@ -148,6 +148,7 @@ export interface WithCheckoutProps {
     clearError(error?: Error): void;
     loadCheckout(id: string, options?: RequestOptions<CheckoutParams>): Promise<CheckoutSelectors>;
     subscribeToConsignments(subscriber: (state: CheckoutSelectors) => void): () => void;
+    test:any;
 }
 
 class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguageProps,CheckoutState> {
@@ -182,10 +183,10 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
             createEmbeddedMessenger,
             embeddedStylesheet,
             loadCheckout,
-            subscribeToConsignments,
+            subscribeToConsignments,   
+            test,
         } = this.props;
-
-        try {
+        try {  
             const { data } = await loadCheckout(checkoutId, {
                 params: {
                     include: [
@@ -194,6 +195,7 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
                     ] as any, // FIXME: Currently the enum is not exported so it can't be used here.
                 },
             });
+            console.log(test)
             const { links: { siteLink = '' } = {} } = data.getConfig() || {};
             const errorFlashMessages = data.getFlashMessages('error') || [];
 
@@ -230,7 +232,7 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
 
             const consignments = data.getConsignments();
             const cart = data.getCart();
-
+         
             const hasMultiShippingEnabled =
                 data.getConfig()?.checkoutSettings.hasMultiShippingEnabled;
             const checkoutBillingSameAsShippingEnabled =
@@ -292,10 +294,9 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
     private renderContent(): ReactNode {
         const { isPending, loginUrl, promotions = [], steps } = this.props;
 
-        const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
+        console.log(this.props);
 
-       
-        console.log(this.props)
+        const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
 
         if (isCartEmpty) {
             return <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />;
@@ -352,6 +353,7 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
         const {
             customerViewType = isGuestEnabled ? CustomerViewType.Guest : CustomerViewType.Login,
         } = this.state;
+        console.log(this.state);
 
         return (
             <CheckoutStep
@@ -524,8 +526,6 @@ class Checkout extends Component<CheckoutProps & WithCheckoutProps & WithLanguag
         const { activeStepType } = this.state;
         const step = find(steps, { type });
         
-        console.log(this.props);
-
         if (!step) {
             return;
         }

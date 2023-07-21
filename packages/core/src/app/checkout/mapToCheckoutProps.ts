@@ -10,6 +10,7 @@ import getCheckoutStepStatuses from './getCheckoutStepStatuses';
 export default function mapToCheckoutProps({
     checkoutService,
     checkoutState,
+    test
 }: CheckoutContextProps): WithCheckoutProps {
     const { data, errors, statuses } = checkoutState;
     const { promotions = EMPTY_ARRAY } = data.getCheckout() || {};
@@ -52,5 +53,6 @@ export default function mapToCheckoutProps({
             checkoutState,
         }),
         steps: data.getCheckout() ? getCheckoutStepStatuses(checkoutState) : EMPTY_ARRAY,
+        test:test,
     };
 }

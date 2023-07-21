@@ -10,6 +10,7 @@ export interface CheckoutProviderProps {
 
 export interface CheckoutProviderState {
     checkoutState: CheckoutSelectors;
+    packageData:any;
 }
 
 export default class CheckoutProvider extends Component<
@@ -32,12 +33,19 @@ export default class CheckoutProvider extends Component<
 
         this.state = {
             checkoutState: props.checkoutService.getState(),
+            packageData:[]
         };
     }
 
     componentDidMount(): void {
         const { checkoutService } = this.props;
-
+        const {packageData} = this.state;
+        fetch('https://jsonplaceholder.typicode.com/todos')
+        .then(response => response.json())
+        .then(json => this.setState({
+            packageData:json
+        }))
+        console.log(packageData);
         this.unsubscribe = checkoutService.subscribe((checkoutState) =>
             this.setState({ checkoutState }),
         );
@@ -52,10 +60,14 @@ export default class CheckoutProvider extends Component<
 
     render(): ReactNode {
         const { checkoutService, children } = this.props;
-        const { checkoutState } = this.state;
+        const { checkoutState , packageData } = this.state;
+        console.log(packageData);
 
         return (
-            <CheckoutContext.Provider value={this.getContextValue(checkoutService, checkoutState)}>
+            <CheckoutContext.Provider value={{
+                ...this.getContextValue(checkoutService, checkoutState),
+                test:'hello'
+            }}>
                 {children}
             </CheckoutContext.Provider>
         );

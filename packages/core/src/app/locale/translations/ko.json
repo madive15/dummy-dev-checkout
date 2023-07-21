@@ -387,13 +387,19 @@
                 "vaulting_service_unavailable": "Vaulting service is currently not available.",
                 "voided_transaction": "Unable to process your payment because the transaction has already been voided. Please try again or contact us."
             },
-            "korea_payment_Creditcard": "신용카드",
-            "korea_payment_PCO": "페이코",
-            "korea_payment_Account": "계좌이체",
-            "korea_payment_VirtualAccount": "가상계좌",
-            "korea_payment_NVP": "네이버페이",
-            "korea_payment_KKO": "카카오페이",
-            "korea_payment_HPP": "휴대폰결제"
+            "cj_payment_text":{
+                "korea_payment_Creditcard": "신용카드",
+                "korea_payment_PCO": "페이코",
+                "korea_payment_Account": "계좌이체",
+                "korea_payment_VirtualAccount": "가상계좌",
+                "korea_payment_NVP": "네이버페이",
+                "korea_payment_KKO": "카카오페이",
+                "korea_payment_HPP": "휴대폰결제",
+                "korea_label_accountOwner":"가상계좌 입금자성명",
+                "korea_label_receipt_info":"현금영수증 발급 번호",
+                "korea_label_cashReceipt_use":"현금영수증 발행 구분",
+                "korea_button_virtual_payment":"가상계좌로 결제하기"
+            }
         },
         "redeemable": {
             "applied_text": "Applied",

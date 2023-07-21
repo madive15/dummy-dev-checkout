@@ -76,6 +76,17 @@
     }
 }
 
+.dimmed {
+    background-color: #333;
+    height: 100%;
+    left: 0;
+    opacity: 0.7;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+}
+
 @media (min-width: 768px) and (max-width: 1024px) {
     .payment-wrap {
         button.korea-btn {
